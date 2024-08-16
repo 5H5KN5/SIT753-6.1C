@@ -1,0 +1,103 @@
+pipeline {
+    agent any
+
+    environment {
+        DIRECTORY_PATH = 'SIT753 Professional Practice in IT/Tasks/5.1P'
+        TESTING_ENVIRONMENT = 'staging'
+        PRODUCTION_ENVIRONMENT = 'hstorm'
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Stage 1: Build - Fetching source code from directory: ${DIRECTORY_PATH}'
+                echo 'Using Maven to compile and package the code.'
+                // Example: Use Maven for building
+                // sh 'mvn clean package'
+            }
+        }
+        stage('Unit and Integration Tests') {
+            steps {
+                echo 'Stage 2: Unit and Integration Tests - Running unit tests using JUnit and integration tests using TestNG.'
+                // Example: Run unit and integration tests
+                // sh 'mvn test'
+            }
+            post {
+                always {
+                    emailext (
+                        subject: "Unit and Integration Tests - ${currentBuild.fullDisplayName} - ${currentBuild.result}",
+                        body: "Stage 2: Unit and Integration Tests completed with status: ${currentBuild.result}\n\nCheck the logs for details: ${env.BUILD_URL}console",
+                        to: 'shiskensravest@deakin.edu.au, hrnstorm@gmail.com',
+                        attachLog: true
+                    )
+                }
+            }
+        }
+
+        stage('Code Analysis') {
+            steps {
+                echo 'Stage 3: Code Analysis - Using SonarQube to analyze the code and ensure it meets industry standards.'
+                // Example: Use SonarQube for code analysis
+                // sh 'sonar-scanner'
+            }
+        }
+        stage('Security Scan') {
+            steps {
+                echo 'Stage 4: Security Scan - Using OWASP Dependency-Check to perform a security scan on the code.'
+                // Example: Use OWASP Dependency-Check for security scanning
+                // sh 'dependency-check.sh --project projectName --scan ./'
+            }
+            post {
+                always {
+                    emailext (
+                        subject: "Security Scan - ${currentBuild.fullDisplayName} - ${currentBuild.result}",
+                        body: "Stage 4: Security Scan completed with status: ${currentBuild.result}\n\nCheck the logs for details: ${env.BUILD_URL}console",
+                        to: 'shiskensravest@deakin.edu.au, hrnstorm@gmail.com',
+                        attachLog: true
+                    )
+                }
+            }
+        }
+
+        stage('Deploy to Staging') {
+            steps {
+                echo 'Stage 5: Deploy to Staging - Deploying the application to the testing environment: ${TESTING_ENVIRONMENT}'
+                // Example: Deploy to staging environment
+                // sh 'deploy_to_staging.sh'
+            }
+        }
+        stage('Integration Tests on Staging') {
+            steps {
+                echo 'Stage 6: Integration Tests on Staging - Running integration tests on the staging environment.'
+                // Example: Run integration tests on staging
+                // sh 'run_integration_tests_on_staging.sh'
+            }
+        }
+        stage('Approval') {
+            steps {
+                echo 'Stage 7: Approval - Awaiting approval before deploying to production.'
+                sleep 10
+                echo 'Approval granted.'
+            }
+        }
+        stage('Deploy to Production') {
+            steps {
+                echo 'Deploying the application to the production environment: ${PRODUCTION_ENVIRONMENT}'
+                // Example: Deploy to production environment
+                // sh 'deploy_to_production.sh'
+            }
+        }
+    }
+    
+    post {
+        always {
+            echo 'Pipeline completed. Sending final notification...'
+            emailext (
+                subject: "Pipeline Completed - ${currentBuild.fullDisplayName} - ${currentBuild.result}",
+                body: "The Jenkins pipeline has completed with status: ${currentBuild.result}\n\nYou can check the build logs here: ${env.BUILD_URL}console",
+                to: 'shiskensravest@deakin.edu.au, hrnstorm@gmail.com',
+                attachLog: true
+            )
+        }
+    }
+}
