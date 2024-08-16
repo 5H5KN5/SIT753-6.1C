@@ -22,15 +22,15 @@ pipeline {
                 // Example: Run unit and integration tests
                 // sh 'mvn test'
             }
-        }
-        post {
-            always {
-                emailext (
-                    subject: "Unit and Integration Tests - ${currentBuild.fullDisplayName} - ${currentBuild.result}",
-                    body: "Stage 2: Unit and Integration Tests completed with status: ${currentBuild.result}\n\nCheck the logs for details: ${env.BUILD_URL}console",
-                    to: 'shiskensravest@deakin.edu.au',
-                    attachLog: true
-                )
+            post {
+                always {
+                    emailext (
+                        subject: "Unit and Integration Tests - ${currentBuild.fullDisplayName} - ${currentBuild.result}",
+                        body: "Stage 2: Unit and Integration Tests completed with status: ${currentBuild.result}\n\nCheck the logs for details: ${env.BUILD_URL}console",
+                        to: 'shiskensravest@deakin.edu.au, hrnstorm@gmail.com',
+                        attachLog: true
+                    )
+                }
             }
         }
 
@@ -47,15 +47,15 @@ pipeline {
                 // Example: Use OWASP Dependency-Check for security scanning
                 // sh 'dependency-check.sh --project projectName --scan ./'
             }
-        }
-        post {
-            always {
-                emailext (
-                    subject: "Security Scan - ${currentBuild.fullDisplayName} - ${currentBuild.result}",
-                    body: "Stage 4: Security Scan completed with status: ${currentBuild.result}\n\nCheck the logs for details: ${env.BUILD_URL}console",
-                    to: 'shiskensravest@deakin.edu.au',
-                    attachLog: true
-                )
+            post {
+                always {
+                    emailext (
+                        subject: "Security Scan - ${currentBuild.fullDisplayName} - ${currentBuild.result}",
+                        body: "Stage 4: Security Scan completed with status: ${currentBuild.result}\n\nCheck the logs for details: ${env.BUILD_URL}console",
+                        to: 'shiskensravest@deakin.edu.au, hrnstorm@gmail.com',
+                        attachLog: true
+                    )
+                }
             }
         }
 
@@ -95,7 +95,7 @@ pipeline {
             emailext (
                 subject: "Pipeline Completed - ${currentBuild.fullDisplayName} - ${currentBuild.result}",
                 body: "The Jenkins pipeline has completed with status: ${currentBuild.result}\n\nYou can check the build logs here: ${env.BUILD_URL}console",
-                to: 'shiskensravest@deakin.edu.au',
+                to: 'shiskensravest@deakin.edu.au, hrnstorm@gmail.com',
                 attachLog: true
             )
         }
