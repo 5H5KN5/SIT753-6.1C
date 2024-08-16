@@ -23,7 +23,6 @@ pipeline {
                 // sh 'mvn test'
             }
         }
-
         post {
             always {
                 emailext (
@@ -49,7 +48,6 @@ pipeline {
                 // sh 'dependency-check.sh --project projectName --scan ./'
             }
         }
-
         post {
             always {
                 emailext (
