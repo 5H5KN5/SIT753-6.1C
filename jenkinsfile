@@ -23,6 +23,18 @@ pipeline {
                 // sh 'mvn test'
             }
         }
+
+        post {
+            always {
+                emailext (
+                    subject: "Unit and Integration Tests - ${currentBuild.fullDisplayName} - ${currentBuild.result}",
+                    body: "Stage 2: Unit and Integration Tests completed with status: ${currentBuild.result}\n\nCheck the logs for details: ${env.BUILD_URL}console",
+                    to: 'shiskensravest@deakin.edu.au',
+                    attachLog: true
+                )
+            }
+        }
+
         stage('Code Analysis') {
             steps {
                 echo 'Stage 3: Code Analysis - Using SonarQube to analyze the code and ensure it meets industry standards.'
@@ -37,6 +49,18 @@ pipeline {
                 // sh 'dependency-check.sh --project projectName --scan ./'
             }
         }
+
+        post {
+            always {
+                emailext (
+                    subject: "Security Scan - ${currentBuild.fullDisplayName} - ${currentBuild.result}",
+                    body: "Stage 4: Security Scan completed with status: ${currentBuild.result}\n\nCheck the logs for details: ${env.BUILD_URL}console",
+                    to: 'shiskensravest@deakin.edu.au',
+                    attachLog: true
+                )
+            }
+        }
+
         stage('Deploy to Staging') {
             steps {
                 echo 'Stage 5: Deploy to Staging - Deploying the application to the testing environment: ${TESTING_ENVIRONMENT}'
@@ -69,14 +93,11 @@ pipeline {
     
     post {
         always {
-            echo 'Pipeline completed. Sending notification...'
-            // Example: Send an email notification
+            echo 'Pipeline completed. Sending final notification...'
             emailext (
-                subject: "Build ${currentBuild.fullDisplayName}",
-                body: "Pipeline '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL}) completed.",
+                subject: "Pipeline Completed - ${currentBuild.fullDisplayName} - ${currentBuild.result}",
+                body: "The Jenkins pipeline has completed with status: ${currentBuild.result}\n\nYou can check the build logs here: ${env.BUILD_URL}console",
                 to: 'shiskensravest@deakin.edu.au',
-                from: 'shiskensravest@deakin.edu.au',
-                replyTo: 'shiskensravest@deakin.edu.au',
                 attachLog: true
             )
         }
