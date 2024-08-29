@@ -101,6 +101,3 @@ pipeline {
         }
     }
 }
-
-// Adding a comment to trigger Jenkins
-echo 'This is a test change to trigger Jenkins'
